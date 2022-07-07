@@ -31,6 +31,7 @@ class LaboratorioController extends Controller
         $laboratorio->nombre = $request->nombre;
 
         $laboratorio->save();
+        return $laboratorio;
     }
 
     /**
