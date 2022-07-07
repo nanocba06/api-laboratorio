@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class LaboratorioController extends Controller
 {
+    private function verifyToken($token)
+    {
+        return $token === 'token';
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,11 +32,17 @@ class LaboratorioController extends Controller
      */
     public function store(Request $request)
     {
-        $laboratorio = new Laboratorio();
-        $laboratorio->nombre = $request->nombre;
-
-        $laboratorio->save();
-        return $laboratorio;
+        $token = $request->header('Authorization');
+        $token_is_valid = $this->verifyToken($token);
+        if($token_is_valid){
+            $laboratorio = new Laboratorio();
+            $laboratorio->nombre = $request->nombre;
+    
+            $laboratorio->save();
+            return $laboratorio;
+        } else {
+            return response()->json(['error' => 'Invalid token'], 401);
+        }
     }
 
     /**
