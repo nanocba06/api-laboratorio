@@ -44,6 +44,30 @@ class LaboratorioController extends Controller
             return response()->json(['error' => 'Invalid token'], 401);
         }
     }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkStore(Request $request)
+    {
+        $token = $request->header('Authorization');
+        $token_is_valid = $this->verifyToken($token);
+        if($token_is_valid){
+            $laboratorios = $request->all();
+            foreach($laboratorios as $laboratoriojson){
+                echo json_encode($laboratoriojson['nombre']);
+                $laboratorio = new Laboratorio();
+                $laboratorio->nombre = $laboratoriojson['nombre'];
+                $laboratorio->save();
+            }
+
+            return $laboratorios;
+        } else {
+            return response()->json(['error' => 'Invalid token'], 401);
+        }
+    }
 
     /**
      * Display the specified resource.

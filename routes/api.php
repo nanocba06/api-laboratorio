@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(LaboratorioController::class)->group(function(){
     Route::get('/laboratorios','index');
     Route::post('/laboratorio','store');
+    Route::post('/laboratorio/bulk','bulkStore');
     Route::get('/laboratorio/{id}','show');
     Route::put('/laboratorio/{id}','update');
     Route::delete('/laboratorio/{id}','destroy');

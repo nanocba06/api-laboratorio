@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: hernan
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: api-laboratorio
+    entrypoint: php artisan serve --host=0.0.0.0 --port=8000
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    container_name: api-laboratorio
+    restart: on-failure
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - pastillero-virtual
+    ports:
+      - "8090:8000"
+
+  db:
+    image: mysql:8.0
+    container_name: labortorios-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: api_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: laboratorio
+      MYSQL_USER: laboratorio
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql/init:/docker-entrypoint-initdb.d
+      - ./docker-compose/mysql/data:/var/lib/mysql
+    networks:
+      - pastillero-virtual
+
+networks:
+  pastillero-virtual:
+    driver: bridge
